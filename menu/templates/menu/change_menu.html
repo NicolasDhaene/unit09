@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ block.super }} - Edit Menu {% endblock %}
+
+{% block content %}
+    <div class="content container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1>Change menu</h1>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="save btn btn-default">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
