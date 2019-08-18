@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
-from datetime import datetime, timezone
+from datetime import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from .models import *
 from .forms import *
@@ -8,6 +8,7 @@ from django.db.models import Q
 
 
 def menu_list(request):
+    # displays the listing of all Menus that havent reach their expiration date
     all_menus = Menu.objects.all().prefetch_related('items')
     query = Q(expiration_date__gte=timezone.now()) | Q(expiration_date__isnull=True)
     menus = all_menus.filter(query).order_by('-expiration_date')
@@ -15,12 +16,14 @@ def menu_list(request):
 
 
 def menu_detail(request, pk):
+    # displays the details of a specific Menu
     menu = Menu.objects.get(pk=pk)
     return render(request, 'menu/menu_detail.html', {'menu': menu})
 
 
 def item_detail(request, pk):
-    try: 
+    # displays the details of a specific Item
+    try:
         item = Item.objects.get(pk=pk)
     except ObjectDoesNotExist:
         raise Http404
@@ -28,6 +31,7 @@ def item_detail(request, pk):
 
 
 def create_new_menu(request):
+    # view to create a new menu
     if request.method == "POST":
         form = MenuForm(request.POST)
         if form.is_valid():
@@ -41,6 +45,7 @@ def create_new_menu(request):
 
 
 def edit_menu(request, pk):
+    # edit an existing menu
     menu = get_object_or_404(Menu, pk=pk)
     if request.method == "POST":
         form = MenuForm(instance=menu, data=request.POST)
